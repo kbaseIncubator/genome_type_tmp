@@ -188,34 +188,36 @@ typedef int Bool;
 
 /*
 Field descriptions:
-    id: string object id
-    scientific_name: human readable species name
-    domain: human readable phylogenetic domain name
+    id: string - object id
+    scientific_name: string - human readable species name
+    domain: string - human readable phylogenetic domain name
     warnings: list of string - warnings generated in the annotation process
     genome_tiers: list of string - TODO what is this
-        Genome_tiers : controlled vocabulary (based on ap input and API checked)
-        Allowed values: #Representative, Reference, ExternalDB, User
-        Examples Tiers:
-        All phytozome - Representative and ExternalDB
-        Phytozome flagship genomes - Reference, Representative and ExternalDB
-        Ensembl - Representative and ExternalDB
-        RefSeq Reference - Reference, Representative and ExternalDB
-        RefSeq Representative - Representative and ExternalDB
-        RefSeq Latest or All Assemblies folder - ExternalDB
-        User Data - User tagged
+        Misc notes:
+          Genome_tiers : controlled vocabulary (based on ap input and API checked)
+          Allowed values: #Representative, Reference, ExternalDB, User
+          Examples Tiers:
+          All phytozome - Representative and ExternalDB
+          Phytozome flagship genomes - Reference, Representative and ExternalDB
+          Ensembl - Representative and ExternalDB
+          RefSeq Reference - Reference, Representative and ExternalDB
+          RefSeq Representative - Representative and ExternalDB
+          RefSeq Latest or All Assemblies folder - ExternalDB
+          User Data - User tagged
     feature_counts: map of string to integer - total counts of each type of feature TODO which
-    genetic_code: An NCBI-assigned integer categorizing the organism: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi 
+    genetic_code: int - An NCBI-assigned taxonomic category for the organism
+        See here: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi 
     dna_size: integer - total number of nucleotides
-    num_contigs: integer - total number of contigs TODO flesh out
-    molecule_type: string - DNA
+    num_contigs: integer - total number of contigs in the genome
+    molecule_type: string - the type of molecule sequenced (eg. "DNA")
     contig_lengths: list of int - nucleotide length of each contig in the genome
-    contig_ids: list of str - identifiers of each contig TODO
+    contig_ids: list of str - external database identifiers for each contig
     source: str - descriptor of where this data came from TODO
         TODO source_id or source??      Source: allowed entries RefSeq, Ensembl, Phytozome, RAST, Prokka, User_upload
         TODO should it be User or User_upload
-    source_id: identifier of where this data came from TODO
-    md5: string - content hash of the object's metadata TODO confirm
-    taxonomy: string - semicolon-delimited taxonomy lineage from root node on the left to the strain or species on the right.
+    source_id: identifier of where this data came from TODO examples
+    md5: string - content hash of the object's metadata TODO confirm what content gets hashed
+    taxonomy: string - semicolon-delimited taxonomy lineage, in order of parent to child
     taxon_assignments: mapping of taxonomy namespace to taxon ID.
         example: {"ncbi": "286", "gtdb": "s__staphylococcus_devriesei"}
     gc_content: float - ratio of GC count to AT in the genome
