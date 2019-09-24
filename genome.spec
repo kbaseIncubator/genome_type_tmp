@@ -6,7 +6,7 @@ typedef string Genome_id;
 
 /*
 External database reference from which this genome data originated.
-Examples: "NZ_LKAC01000001", "NC_014248"
+Examples: "NC_014248"
 @id external
 */
 typedef string source_id;
