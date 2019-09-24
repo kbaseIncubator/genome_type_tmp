@@ -187,7 +187,7 @@ typedef structure {
 typedef int Bool;
 
 /*
-Fields descriptions:
+Field descriptions:
     id: string object id
     scientific_name: human readable species name
     domain: human readable phylogenetic domain name
