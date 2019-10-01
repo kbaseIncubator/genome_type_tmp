@@ -31,7 +31,15 @@ Workspace reference to an ontology object
 typedef string Ontology_ref;
 
 /*
-TODO what is this
+An ontology event is a record of the service and method used for a set of
+ontology assignments on the genome.
+Fields:
+  id - name of the ontology (eg. "GO", "ENVO")
+  ontology_ref - workspace reference to the ontology source object
+  method - method from the service that created the ontology for a given source
+  method_version - version of the above method
+  timestamp - epoch of when this assignment occured
+  eco - TODO
 @optional ontology_ref method_version eco
 */
 typedef structure {
@@ -65,7 +73,7 @@ Example: "EPWB_RS00020"
 typedef string Feature_id;
 
 /*
-TODO what is this
+Identifier of an mRNA sequence
 @id external
 */
 typedef string mrna_id;
@@ -81,7 +89,7 @@ typedef structure {
 } InferenceInfo;
 
 /*
-Structure for a single feature CDS
+Structure for a single coding sequence.
 
       flags are flag fields in GenBank format. This will be a controlled vocabulary.
         Initially Acceptable values are pseudo, ribosomal_slippage, and trans_splicing
@@ -191,20 +199,19 @@ Field descriptions:
     id: string - object id
     scientific_name: string - human readable species name
     domain: string - human readable phylogenetic domain name
-    warnings: list of string - warnings generated in the annotation process
-    genome_tiers: list of string - TODO what is this
-        Misc notes:
-          Genome_tiers : controlled vocabulary (based on ap input and API checked)
-          Allowed values: #Representative, Reference, ExternalDB, User
-          Examples Tiers:
-          All phytozome - Representative and ExternalDB
-          Phytozome flagship genomes - Reference, Representative and ExternalDB
-          Ensembl - Representative and ExternalDB
-          RefSeq Reference - Reference, Representative and ExternalDB
-          RefSeq Representative - Representative and ExternalDB
-          RefSeq Latest or All Assemblies folder - ExternalDB
-          User Data - User tagged
-    feature_counts: map of string to integer - total counts of each type of feature TODO which
+    warnings: list of string - genome-level warnings generated in the annotation process
+    genome_tiers: list of string - controlled vocabulary (based on app input and checked by the GFU)
+        Allowed values: Representative, Reference, ExternalDB, User
+        Tier assignments based on genome source:
+         * All phytozome - Representative and ExternalDB
+         * Phytozome flagship genomes - Reference, Representative and ExternalDB
+         * Ensembl - Representative and ExternalDB
+         * RefSeq Reference - Reference, Representative and ExternalDB
+         * RefSeq Representative - Representative and ExternalDB
+         * RefSeq Latest or All Assemblies folder - ExternalDB
+         * User Data - User tagged
+    feature_counts: map of string to integer - total counts of each type of feature
+        (key examples: "gene", "CDS", "mRNA", "non_coding_features")
     genetic_code: int - An NCBI-assigned taxonomic category for the organism
         See here: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi 
     dna_size: integer - total number of nucleotides
@@ -212,33 +219,35 @@ Field descriptions:
     molecule_type: string - the type of molecule sequenced (eg. "DNA")
     contig_lengths: list of int - nucleotide length of each contig in the genome
     contig_ids: list of str - external database identifiers for each contig
-    source: str - descriptor of where this data came from TODO
-        TODO source_id or source??      Source: allowed entries RefSeq, Ensembl, Phytozome, RAST, Prokka, User_upload
-        TODO should it be User or User_upload
-    source_id: identifier of where this data came from TODO examples
-    md5: string - content hash of the object's metadata TODO confirm what content gets hashed
+    source: str - controlled vocab - descriptor of where this data came from (eg. "RefSeq")
+        Allowed entries RefSeq, Ensembl, Phytozome, RAST, Prokka, User_upload
+    source_id: string - identifier of this genome from the source database (eg. the RefSeq ID such as "NC_000913")
+    md5: string - checksum of the underlying assembly sequence
     taxonomy: string - semicolon-delimited taxonomy lineage, in order of parent to child
     taxon_assignments: mapping of taxonomy namespace to taxon ID.
         example: {"ncbi": "286", "gtdb": "s__staphylococcus_devriesei"}
     gc_content: float - ratio of GC count to AT in the genome
     publications: tuple of (pubmedid, source, title, web_addr, year, authors, journal). See typedef above.
-    ontology_events: TODO
-    ontologies_present: TODO
-    features: TODO
-    non_coding_features: TODO
-    cdss: TODO
-    mrnas: TODO
+    ontology_events: A record of the service and method used for a set of
+        ontology assignments on the genome.
+    ontologies_present: a mapping of ontology source id (eg. "GO") to a mapping
+        of term IDs (eg "GO:16209") to term names or descriptions.
+    features: array of Feature - protein coding genes (see the separate Feature spec)
+    cdss: array of protein-coding sequences
+    mrnas: array of transcribed messenger RNA sequences (equal to cdss plus 5' and 3' UTRs)
+    non_coding_features: array of features that does not include mRNA, CDS, and protein-encoding genes
     assembly_ref: workspace reference to an assembly object from which this annotated genome was derived.
     taxon_ref: workspace reference to a taxon object that classifies the species or strain of this genome.
     genbank_handle_ref: file server handle reference to the source genbank file for this genome.
     gff_handle_ref: file server handle reference to the source GFF file for this genome.
-    external_source_origination_date: TODO
-    release: TODO
+    external_source_origination_date: TODO look at GFU for this
+    release: string - User-supplied release or version of the source data
     original_source_file_name: filename from which this genome was derived (eg. genbank or gff filename).
     notes: TODO
     quality_scores: TODO
-    suspect: bool - TODO
-    genome_type: string - TODO
+    suspect: bool - flag of whether this annotation is problematic due to some warning
+    genome_type: string - controlled vocab - One of "draft isolate",
+        "finished isolate", "mag", "sag", "virus", "plasmid", "construct"
 
 @optional warnings contig_lengths contig_ids source_id taxonomy publications
 @optional ontology_events ontologies_present non_coding_features mrnas genome_type
