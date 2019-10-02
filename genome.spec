@@ -1,5 +1,5 @@
 /*
-Workspace reference to a genome object.
+KBase legacy data ID
 @id kb
 */
 typedef string Genome_id;
@@ -196,7 +196,7 @@ typedef int Bool;
 
 /*
 Field descriptions:
-    id: string - TODO
+    id: string - KBase legacy data ID
     scientific_name: string - human readable species name
     domain: string - human readable phylogenetic domain name (eg. "Bacteria")
     warnings: list of string - genome-level warnings generated in the annotation process
