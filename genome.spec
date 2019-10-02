@@ -351,7 +351,7 @@ Field descriptions:
     ontology_events: A record of the service and method used for a set of
         ontology assignments on the genome.
     ontologies_present: a mapping of ontology source id (eg. "GO") to a mapping
-        of term IDs (eg "GO:16209") to term names.
+        of term IDs (eg "GO:16209") to term names (eg. "histidine biosynthetic process").
     features: array of Feature - protein coding genes (see the separate Feature spec)
     cdss: array of protein-coding sequences
     mrnas: array of transcribed messenger RNA sequences (equal to cdss plus 5' and 3' UTRs)
