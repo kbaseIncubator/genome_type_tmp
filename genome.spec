@@ -15,7 +15,7 @@ typedef string source_id;
 Publication data about this genome.
 Fields:
     0: float  pubmedid
-    1: string source (ex. Pubmed)
+    1: string source (eg. "Pubmed")
     2: string title
     3: string URL of publication
     4: string publication year
@@ -79,8 +79,13 @@ Identifier of an mRNA sequence
 typedef string mrna_id;
 
 /*
-category;#Maybe a controlled vocabulary
-    type;#Maybe a controlled vocabulary
+TODO
+Found in the `inference_data` fields in mRNAs and CDSs
+
+Fields
+  category: string - TODO
+  type: string - TODO
+  evidence: string - TODO
 */
 typedef structure {
   string category;
@@ -90,6 +95,58 @@ typedef structure {
 
 /*
 Structure for a single coding sequence.
+
+Coding sequences are the sections of a feature's sequence that are translated
+to a protein (minus introns and UTRs).
+
+Fields:
+  id: string - identifier of the coding sequence, such as "b0001_CDS_1"
+  location: list of (string, int, string, int) - list of locations from where
+      this sequence originates in the original assembly. Each sub-sequence in the
+      list constitutes a section of the resulting CDS. The first element in
+      the tuple corresponds to the "contig_id", such as "NC_000913.3". The second
+      element in the tuple is an index in the contig of where the sequence starts.
+      The third element is either a plus or minus sign indicating whether it is on
+      the 5' to 3' leading strand ("+") or on the 3' to 5' lagging strand ("-"). The last element
+      is the length of the sub-sequence.
+      For a location on the leading strand (denoted by "+"), the index is of
+      the leftmost base, and the sequence extends to the right.
+      For a location on the lagging strand (denoted by "-"), the index is of
+      the rightmost base, and the sequence extends to the left.
+      NOTE: the third element in each tuple is the *length* of each
+      sub-sequence. If you have a location such as ("xyz", 100, "+", 50), then
+      your sequence will go from index 100 to index 149 (this has a length of
+      50). It *does not* go from index 100 to index 150, as that would have a
+      length of 51.
+      Likewise, if you have the location ("xyz", 100, "-", 50), then the
+      sequence extends from 100 down to 51, which has a length of 50 bases. It
+      does not go from index 100 to 50, as that would have a length of 51.
+  md5: string - TODO
+  protein_md5: string - hash of the protein sequence that this CDS encodes
+  parent_gene: string - gene (feature) from which this CDS comes from,
+      including introns and UTRs that have been removed to create this CDS.
+  parent_mrna: string - mRNA sequence from which this sequence is derived,
+      including UTRs but not introns.
+  note: string - TODO
+  functions: list of string - TODO list of protein products or chemical
+      processes that sequence creates, facilitates, or influences.
+  functional_descriptions: list of string - TODO list of protein products or chemical
+      processes that sequence creates, facilitates, or influences.
+  ontology_terms: map of string to (map of string to (list of int)) - a mapping
+      of ontology source id (eg. "GO") to a mapping of term IDs (eg "GO:16209") to
+      a list of indexes into the ontology events. The index into an ontology
+      event indicates what service and method created this term assignment.
+  flags: list of string - controlled vocab - fields from the genbank source. A
+      common example is "pseudo" for pseudo-genes that do not encode proteins,
+      which shows up as "/pseudo" in the genbank.
+  warnings: list of string - TODO
+  inference_data: list of InferenceInfo -
+  protein_translation: string - amino acid sequence that this CDS gets translated into.
+  protein_translation_length: int - length of the above
+  aliases: list of (string, string) - alternative list of names or identifiers
+  db_xrefs: list of (string, string) - Identifiers from other databases (database cross-references)
+  dna_sequence: string - sequence of UTRs and exons from the genome that constitute this mRNA
+  dna_sequence_length: int - length of the above
 
       flags are flag fields in GenBank format. This will be a controlled vocabulary.
         Initially Acceptable values are pseudo, ribosomal_slippage, and trans_splicing
@@ -121,14 +178,59 @@ typedef structure {
 } CDS;
 
 /*
-Structure for a single feature mRNA
+The mRNA is the transcribed sequence from the original feature, minus the
+introns, but including the UTRs.
 
-      flags are flag fields in GenBank format. This will be a controlled vocabulary.
-        Initially Acceptable values are pseudo, ribosomal_slippage, and trans_splicing
-        Md5 is the md5 of dna_sequence.
+Fields:
+  id: string - identifying string for the mRNA
+  location: list of (string, int, string, int) - list of locations from where
+      this sequence originates in the original assembly. Each sub-sequence in the
+      list constitutes a section of the resulting CDS. The first element in
+      the tuple corresponds to the "contig_id", such as "NC_000913.3". The second
+      element in the tuple is an index in the contig of where the sequence starts.
+      The third element is either a plus or minus sign indicating whether it is on
+      the 5' to 3' leading strand ("+") or on the 3' to 5' lagging strand ("-"). The last element
+      is the length of the sub-sequence.
+      For a location on the leading strand (denoted by "+"), the index is of
+      the leftmost base, and the sequence extends to the right.
+      For a location on the lagging strand (denoted by "-"), the index is of
+      the rightmost base, and the sequence extends to the left.
+      NOTE: the third element in each tuple is the *length* of each
+      sub-sequence. If you have a location such as ("xyz", 100, "+", 50), then
+      your sequence will go from index 100 to index 149 (this has a length of
+      50). It *does not* go from index 100 to index 150, as that would have a
+      length of 51.
+      Likewise, if you have the location ("xyz", 100, "-", 50), then the
+      sequence extends from 100 down to 51, which has a length of 50 bases. It
+      does not go from index 100 to 50, as that would have a length of 51.
+  md5: string - checksum of TODO
+  parent_gene: Feature_id - corresponding feature for this sequence, including introns and UTRs
+  cds: string - corresponding coding sequence for this mRNA (the sequence minus UTRs)
+  dna_sequence: string - sequence of UTRs and exons from the genome that constitute this mRNA
+  dna_sequence_length: int - length of the above
+  note: string - TODO
+  functions: list of string - TODO list of protein products or chemical
+      processes that sequence creates, facilitates, or influences.
+  functional_descriptions: list of string - TODO list of protein products or chemical
+      processes that sequence creates, facilitates, or influences.
+  ontology_terms: map of string to (map of string to (list of int)) - a mapping
+      of ontology source id (eg. "GO") to a mapping of term IDs (eg "GO:16209") to
+      a list of indexes into the ontology events. The index into an ontology
+      event indicates what service and method created this term assignment.
+  flags: list of string - controlled vocab - fields from the genbank source. A
+      common example is "pseudo" for pseudo-genes that do not encode proteins,
+      which shows up as "/pseudo" in the genbank.
+  warnings: list of string - TODO
+  inference_data: list of InferenceInfo - TODO
+  aliases: list of (string, string) - alternative list of names or identifiers
+  db_xrefs: list of (string, string) - Identifiers from other databases (database cross-references)
 
-        @optional parent_gene cds functions ontology_terms note flags warnings
-        @optional inference_data dna_sequence aliases db_xrefs functional_descriptions
+flags are flag fields in GenBank format. This will be a controlled vocabulary.
+Initially Acceptable values are pseudo, ribosomal_slippage, and trans_splicing
+Md5 is the md5 of dna_sequence.
+
+@optional parent_gene cds functions ontology_terms note flags warnings
+@optional inference_data dna_sequence aliases db_xrefs functional_descriptions
 */
 typedef structure {
   mrna_id id;
@@ -180,6 +282,16 @@ Reference to a report object
 typedef string Method_report_ref;
 
 /*
+Genome quality score
+
+Fields:
+  method: string -
+  method_report_ref: string -
+  method_version: string -
+  score: string -
+  score_interpretation: string -
+  timestamp: string -
+
 Score_interpretation: fraction_complete - controlled vocabulary managed by API
 @optional method_report_ref method_version
 */
@@ -217,7 +329,7 @@ Field descriptions:
         "non_coding_genes", "protein_encoding_gene", "rRNA", "rep_origin",
         "repeat_region", "tRNA"
     genetic_code: int - An NCBI-assigned taxonomic category for the organism
-        See here: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi 
+        See here: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi
     dna_size: integer - total number of nucleotides
     num_contigs: integer - total number of contigs in the genome
     molecule_type: string - controlled vocab - the type of molecule sequenced
@@ -239,7 +351,7 @@ Field descriptions:
     ontology_events: A record of the service and method used for a set of
         ontology assignments on the genome.
     ontologies_present: a mapping of ontology source id (eg. "GO") to a mapping
-        of term IDs (eg "GO:16209") to term names or descriptions.
+        of term IDs (eg "GO:16209") to term names.
     features: array of Feature - protein coding genes (see the separate Feature spec)
     cdss: array of protein-coding sequences
     mrnas: array of transcribed messenger RNA sequences (equal to cdss plus 5' and 3' UTRs)
