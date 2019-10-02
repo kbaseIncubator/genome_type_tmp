@@ -17,9 +17,9 @@ Fields:
     0: float  pubmedid
     1: string source (ex. Pubmed)
     2: string title
-    3: string web address
+    3: string URL of publication
     4: string publication year
-    5: string authors
+    5: string authors (eg. "Smith,K., Doe,N., Chan,Y.")
     6: string journal
 */
 typedef tuple<float, string, string, string, string, string, string> publication;
@@ -196,11 +196,12 @@ typedef int Bool;
 
 /*
 Field descriptions:
-    id: string - object id
+    id: string - TODO
     scientific_name: string - human readable species name
-    domain: string - human readable phylogenetic domain name
+    domain: string - human readable phylogenetic domain name (eg. "Bacteria")
     warnings: list of string - genome-level warnings generated in the annotation process
     genome_tiers: list of string - controlled vocabulary (based on app input and checked by the GFU)
+        A list of labels describing the data source for this genome.
         Allowed values: Representative, Reference, ExternalDB, User
         Tier assignments based on genome source:
          * All phytozome - Representative and ExternalDB
@@ -211,14 +212,17 @@ Field descriptions:
          * RefSeq Latest or All Assemblies folder - ExternalDB
          * User Data - User tagged
     feature_counts: map of string to integer - total counts of each type of feature
-        (key examples: "gene", "CDS", "mRNA", "non_coding_features")
+        keys are a controlled vocabulary of: "CDS", "gene", "misc_feature",
+        "misc_recomb", "mobile_element", "ncRNA": 72, "non_coding_features",
+        "non_coding_genes", "protein_encoding_gene", "rRNA", "rep_origin",
+        "repeat_region", "tRNA"
     genetic_code: int - An NCBI-assigned taxonomic category for the organism
         See here: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi 
     dna_size: integer - total number of nucleotides
     num_contigs: integer - total number of contigs in the genome
     molecule_type: string - the type of molecule sequenced (eg. "DNA")
     contig_lengths: list of int - nucleotide length of each contig in the genome
-    contig_ids: list of str - external database identifiers for each contig
+    contig_ids: list of str - external database identifiers for each contig (eg. "NC_000913.3")
     source: str - controlled vocab - descriptor of where this data came from (eg. "RefSeq")
         Allowed entries RefSeq, Ensembl, Phytozome, RAST, Prokka, User_upload
     source_id: string - identifier of this genome from the source database (eg. the RefSeq ID such as "NC_000913")
@@ -241,13 +245,19 @@ Field descriptions:
     genbank_handle_ref: file server handle reference to the source genbank file for this genome.
     gff_handle_ref: file server handle reference to the source GFF file for this genome.
     external_source_origination_date: TODO look at GFU for this
-    release: string - User-supplied release or version of the source data
+    release: string - User-supplied release or version of the source data. This
+        most likely will come from an input field in the import app.
     original_source_file_name: filename from which this genome was derived (eg. genbank or gff filename).
     notes: TODO
     quality_scores: TODO
     suspect: bool - flag of whether this annotation is problematic due to some warning
     genome_type: string - controlled vocab - One of "draft isolate",
         "finished isolate", "mag", "sag", "virus", "plasmid", "construct"
+
+Features vs. coding sequences: a feature is a sequence in the DNA that codes
+for a protein, including non-transcribed introns. A coding sequence (stored as
+`cdss`) includes **only** the sections of the feature that codes for a protein,
+minus introns and UTRs.
 
 @optional warnings contig_lengths contig_ids source_id taxonomy publications
 @optional ontology_events ontologies_present non_coding_features mrnas genome_type
