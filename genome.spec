@@ -200,7 +200,7 @@ Field descriptions:
     scientific_name: string - human readable species name
     domain: string - human readable phylogenetic domain name (eg. "Bacteria")
     warnings: list of string - genome-level warnings generated in the annotation process
-    genome_tiers: list of string - controlled vocabulary (based on app input and checked by the GFU)
+    genome_tiers: list of string - controlled vocabulary (based on app input and checked by GenomeFileUtil)
         A list of labels describing the data source for this genome.
         Allowed values: Representative, Reference, ExternalDB, User
         Tier assignments based on genome source:
