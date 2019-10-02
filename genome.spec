@@ -225,6 +225,7 @@ Field descriptions:
         "mRNA", "tRNA", "rRNA", "other RNA", "other DNA", "transcribed RNA",
         "viral cRNA", "unassigned DNA", "unassigned RNA"
     contig_lengths: list of int - nucleotide length of each contig in the genome
+        Indexes in this list correspond to indexes in the `contig_ids` list.
     contig_ids: list of str - external database identifiers for each contig (eg. "NC_000913.3")
     source: str - controlled vocab - descriptor of where this data came from (eg. "RefSeq")
         Allowed entries RefSeq, Ensembl, Phytozome, RAST, Prokka, User_upload
