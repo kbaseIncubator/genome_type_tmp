@@ -220,7 +220,10 @@ Field descriptions:
         See here: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi 
     dna_size: integer - total number of nucleotides
     num_contigs: integer - total number of contigs in the genome
-    molecule_type: string - the type of molecule sequenced (eg. "DNA")
+    molecule_type: string - controlled vocab - the type of molecule sequenced
+        Possible values are "Unknown", "DNA", "RNA", "genomic DNA", "genomic RNA",
+        "mRNA", "tRNA", "rRNA", "other RNA", "other DNA", "transcribed RNA",
+        "viral cRNA", "unassigned DNA", "unassigned RNA"
     contig_lengths: list of int - nucleotide length of each contig in the genome
     contig_ids: list of str - external database identifiers for each contig (eg. "NC_000913.3")
     source: str - controlled vocab - descriptor of where this data came from (eg. "RefSeq")
