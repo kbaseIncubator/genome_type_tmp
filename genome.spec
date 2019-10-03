@@ -106,14 +106,14 @@ Fields:
       list constitutes a section of the resulting CDS. The first element in
       the tuple corresponds to the "contig_id", such as "NC_000913.3". The second
       element in the tuple is an index in the contig of where the sequence starts.
-      The third element is either a plus or minus sign indicating whether it is on
-      the 5' to 3' leading strand ("+") or on the 3' to 5' lagging strand ("-"). The last element
-      is the length of the sub-sequence.
+      The third element is either a plus or minus sign indicating whether it is
+      on the 5' to 3' leading strand ("+") or on the 3' to 5' lagging strand
+      ("-"). The last element is the length of the sub-sequence.
       For a location on the leading strand (denoted by "+"), the index is of
       the leftmost base, and the sequence extends to the right.
       For a location on the lagging strand (denoted by "-"), the index is of
       the rightmost base, and the sequence extends to the left.
-      NOTE: the third element in each tuple is the *length* of each
+      NOTE: the last element in each tuple is the *length* of each
       sub-sequence. If you have a location such as ("xyz", 100, "+", 50), then
       your sequence will go from index 100 to index 149 (this has a length of
       50). It *does not* go from index 100 to index 150, as that would have a
@@ -121,39 +121,40 @@ Fields:
       Likewise, if you have the location ("xyz", 100, "-", 50), then the
       sequence extends from 100 down to 51, which has a length of 50 bases. It
       does not go from index 100 to 50, as that would have a length of 51.
-  md5: string - TODO
+  md5: string - md5 of the dna sequence - TODO clarification
   protein_md5: string - hash of the protein sequence that this CDS encodes
   parent_gene: string - gene (feature) from which this CDS comes from,
       including introns and UTRs that have been removed to create this CDS.
   parent_mrna: string - mRNA sequence from which this sequence is derived,
       including UTRs but not introns.
   note: string - TODO
-  functions: list of string - TODO list of protein products or chemical
-      processes that sequence creates, facilitates, or influences.
+  functions: list of string - list of protein products or chemical
+      processes that this sequence creates, facilitates, or influences.
   functional_descriptions: list of string - TODO list of protein products or chemical
       processes that sequence creates, facilitates, or influences.
   ontology_terms: map of string to (map of string to (list of int)) - a mapping
       of ontology source id (eg. "GO") to a mapping of term IDs (eg "GO:16209") to
-      a list of indexes into the ontology events. The index into an ontology
-      event indicates what service and method created this term assignment.
+      a list of indexes into the ontology_events data (found in the top level
+      of the genome object). The index into an ontology event indicates what
+      service and method created this term assignment.
   flags: list of string - controlled vocab - fields from the genbank source. A
       common example is "pseudo" for pseudo-genes that do not encode proteins,
       which shows up as "/pseudo" in the genbank.
+      Values can be: "pseudo", "ribosomal_slippage", "trans_splicing"
   warnings: list of string - TODO
-  inference_data: list of InferenceInfo -
+  inference_data: list of InferenceInfo - TODO
   protein_translation: string - amino acid sequence that this CDS gets translated into.
   protein_translation_length: int - length of the above
   aliases: list of (string, string) - alternative list of names or identifiers
+      eg: [["gene", "thrA"], ["locus_tag", "b0002"]]
   db_xrefs: list of (string, string) - Identifiers from other databases (database cross-references)
-  dna_sequence: string - sequence of UTRs and exons from the genome that constitute this mRNA
+      The first string is the database name, the second is the database identifier.
+      eg: [["ASAP", "ABE-0000006"], ["EcoGene", "EG11277"]]
+  dna_sequence: string - sequence of exons from the genome that constitute this protein encoding sequence.
   dna_sequence_length: int - length of the above
 
-      flags are flag fields in GenBank format. This will be a controlled vocabulary.
-        Initially Acceptable values are pseudo, ribosomal_slippage, and trans_splicing
-        Md5 is the md5 of dna_sequence.
-
-        @optional parent_gene parent_mrna functions ontology_terms note flags warnings
-        @optional inference_data dna_sequence aliases db_xrefs functional_descriptions
+@optional parent_gene parent_mrna functions ontology_terms note flags warnings
+@optional inference_data dna_sequence aliases db_xrefs functional_descriptions
 */
 typedef structure {
   cds_id id;
@@ -188,14 +189,14 @@ Fields:
       list constitutes a section of the resulting CDS. The first element in
       the tuple corresponds to the "contig_id", such as "NC_000913.3". The second
       element in the tuple is an index in the contig of where the sequence starts.
-      The third element is either a plus or minus sign indicating whether it is on
-      the 5' to 3' leading strand ("+") or on the 3' to 5' lagging strand ("-"). The last element
-      is the length of the sub-sequence.
+      The third element is either a plus or minus sign indicating whether it is
+      on the 5' to 3' leading strand ("+") or on the 3' to 5' lagging strand
+      ("-"). The last element is the length of the sub-sequence.
       For a location on the leading strand (denoted by "+"), the index is of
       the leftmost base, and the sequence extends to the right.
       For a location on the lagging strand (denoted by "-"), the index is of
       the rightmost base, and the sequence extends to the left.
-      NOTE: the third element in each tuple is the *length* of each
+      NOTE: the last element in each tuple is the *length* of each
       sub-sequence. If you have a location such as ("xyz", 100, "+", 50), then
       your sequence will go from index 100 to index 149 (this has a length of
       50). It *does not* go from index 100 to index 150, as that would have a
@@ -203,7 +204,7 @@ Fields:
       Likewise, if you have the location ("xyz", 100, "-", 50), then the
       sequence extends from 100 down to 51, which has a length of 50 bases. It
       does not go from index 100 to 50, as that would have a length of 51.
-  md5: string - checksum of TODO
+  md5: string - md5 of the dna sequence - TODO clarification
   parent_gene: Feature_id - corresponding feature for this sequence, including introns and UTRs
   cds: string - corresponding coding sequence for this mRNA (the sequence minus UTRs)
   dna_sequence: string - sequence of UTRs and exons from the genome that constitute this mRNA
@@ -215,19 +216,20 @@ Fields:
       processes that sequence creates, facilitates, or influences.
   ontology_terms: map of string to (map of string to (list of int)) - a mapping
       of ontology source id (eg. "GO") to a mapping of term IDs (eg "GO:16209") to
-      a list of indexes into the ontology events. The index into an ontology
-      event indicates what service and method created this term assignment.
+      a list of indexes into the ontology_events data (found in the top level
+      of the genome object). The index into an ontology event indicates what
+      service and method created this term assignment.
   flags: list of string - controlled vocab - fields from the genbank source. A
       common example is "pseudo" for pseudo-genes that do not encode proteins,
       which shows up as "/pseudo" in the genbank.
+      Values can be: "pseudo", "ribosomal_slippage", "trans_splicing"
   warnings: list of string - TODO
   inference_data: list of InferenceInfo - TODO
   aliases: list of (string, string) - alternative list of names or identifiers
-  db_xrefs: list of (string, string) - Identifiers from other databases (database cross-references)
-
-flags are flag fields in GenBank format. This will be a controlled vocabulary.
-Initially Acceptable values are pseudo, ribosomal_slippage, and trans_splicing
-Md5 is the md5 of dna_sequence.
+      eg: [["gene", "thrA"], ["locus_tag", "b0002"]]
+  db_xrefs: list of (string, string) - Identifiers from other databases (database cross-references).
+      The first string is the database name, the second is the database identifier.
+      eg: [["ASAP", "ABE-0000006"], ["EcoGene", "EG11277"]]
 
 @optional parent_gene cds functions ontology_terms note flags warnings
 @optional inference_data dna_sequence aliases db_xrefs functional_descriptions
