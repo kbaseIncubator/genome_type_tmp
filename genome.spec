@@ -417,7 +417,7 @@ typedef structure {
   source_id source_id;
   string md5;
   string taxonomy;
-  map<string, string> taxon_assignments;
+  mapping<string, string> taxon_assignments;
   float gc_content;
   list<publication> publications;
   list<Ontology_event> ontology_events;
