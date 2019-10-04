@@ -25,16 +25,18 @@ def main():
             "params": [{
                 "spec": spec,
                 "dryrun": 1,
-                "dependencies": {
-                    # TODO this does not work
-                    "KBaseGenomes": "Feature-7.0"
-                }
+                # "dependencies": {
+                #     # TODO this does not work
+                #     "KBaseGenomes": "Feature-7.0"
+                # }
             }],
         })
     )
     resp_json = resp.json()
     if resp_json['error']:
         sys.stderr.write(resp_json['error']['error'] + "\n")
+    else:
+        print(resp.text)
 
 
 if __name__ == '__main__':
