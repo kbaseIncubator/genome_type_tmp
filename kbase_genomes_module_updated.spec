@@ -611,7 +611,7 @@ module KBaseGenomes {
     @optional ontology_events ontologies_present non_coding_features mrnas genome_type
     @optional genbank_handle_ref gff_handle_ref external_source_origination_date
     @optional release original_source_file_name notes quality_scores suspect assembly_ref
-    @optional taxon_ref
+    @optional taxon_ref taxon_assignments
 
     @metadata ws gc_content as GC content
     @metadata ws taxonomy as Taxonomy

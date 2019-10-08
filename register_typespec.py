@@ -21,7 +21,7 @@ def main():
         headers={"Authorization": _TOK},
         data=json.dumps({
             "method": "register_typespec",
-            "params": [{"spec": spec, "dryrun": 0}],
+            "params": [{"spec": spec, "dryrun": 1}],
         })
     )
     resp_json = resp.json()
