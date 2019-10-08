@@ -1,0 +1,1586 @@
+{
+  "id" : "Genome",
+  "description" : "Genome type -- annotated and assembled genome data.\n\nField descriptions:\n    id - string - KBase legacy data ID\n    scientific_name - string - human readable species name\n    domain - string - human readable phylogenetic domain name (eg. \"Bacteria\")\n    warnings - list of string - genome-level warnings generated in the annotation process\n    genome_tiers - list of string - controlled vocabulary (based on app input and checked by GenomeFileUtil)\n        A list of labels describing the data source for this genome.\n        Allowed values - Representative, Reference, ExternalDB, User\n        Tier assignments based on genome source:\n         * All phytozome - Representative and ExternalDB\n         * Phytozome flagship genomes - Reference, Representative and ExternalDB\n         * Ensembl - Representative and ExternalDB\n         * RefSeq Reference - Reference, Representative and ExternalDB\n         * RefSeq Representative - Representative and ExternalDB\n         * RefSeq Latest or All Assemblies folder - ExternalDB\n         * User Data - User tagged\n    feature_counts - map of string to integer - total counts of each type of feature\n        keys are a controlled vocabulary of - \"CDS\", \"gene\", \"misc_feature\",\n        \"misc_recomb\", \"mobile_element\", \"ncRNA\" - 72, \"non_coding_features\",\n        \"non_coding_genes\", \"protein_encoding_gene\", \"rRNA\", \"rep_origin\",\n        \"repeat_region\", \"tRNA\"\n    genetic_code - int - An NCBI-assigned taxonomic category for the organism\n        See here - https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi\n    dna_size - integer - total number of nucleotides\n    num_contigs - integer - total number of contigs in the genome\n    molecule_type - string - controlled vocab - the type of molecule sequenced\n        Possible values are \"Unknown\", \"DNA\", \"RNA\", \"genomic DNA\", \"genomic RNA\",\n        \"mRNA\", \"tRNA\", \"rRNA\", \"other RNA\", \"other DNA\", \"transcribed RNA\",\n        \"viral cRNA\", \"unassigned DNA\", \"unassigned RNA\"\n    contig_lengths - list of int - nucleotide length of each contig in the genome\n        Indexes in this list correspond to indexes in the `contig_ids` list.\n    contig_ids - list of str - external database identifiers for each contig (eg. \"NC_000913.3\")\n    source - str - controlled vocab - descriptor of where this data came from (eg. \"RefSeq\")\n        Allowed entries RefSeq, Ensembl, Phytozome, RAST, Prokka, User_upload\n    source_id - string - identifier of this genome from the source database (eg. the RefSeq ID such as \"NC_000913\")\n    md5 - string - checksum of the underlying assembly sequence\n    taxonomy - string - semicolon-delimited taxonomy lineage, in order of parent to child\n    taxon_assignments - mapping of taxonomy namespace to taxon ID.\n        example - {\"ncbi\": \"286\", \"gtdb\": \"s__staphylococcus_devriesei\"}\n    gc_content - float - ratio of GC count to AT in the genome\n    publications - tuple of (pubmedid, source, title, web_addr, year, authors, journal). See typedef above.\n    ontology_events - A record of the service and method used for a set of\n        ontology assignments on the genome.\n    ontologies_present - a mapping of ontology source id (eg. \"GO\") to a mapping\n        of term IDs (eg \"GO:16209\") to term names (eg. \"histidine biosynthetic process\").\n    features - array of Feature - protein coding genes (see the separate Feature spec)\n    cdss - array of protein-coding sequences\n    mrnas - array of transcribed messenger RNA sequences (equal to cdss plus 5' and 3' UTRs)\n    non_coding_features - array of features that does not include mRNA, CDS, and protein-encoding genes\n    assembly_ref - workspace reference to an assembly object from which this annotated genome was derived.\n    taxon_ref - workspace reference to a taxon object that classifies the species or strain of this genome.\n    genbank_handle_ref - file server handle reference to the source genbank file for this genome.\n    gff_handle_ref - file server handle reference to the source GFF file for this genome.\n    external_source_origination_date - TODO look at GFU for this\n    release - string - User-supplied release or version of the source data. This\n        most likely will come from an input field in the import app.\n    original_source_file_name - filename from which this genome was derived (eg. genbank or gff filename).\n    notes - TODO\n    quality_scores - TODO\n    suspect - bool - flag of whether this annotation is problematic due to some warning\n    genome_type - string - controlled vocab - One of \"draft isolate\",\n        \"finished isolate\", \"mag\", \"sag\", \"virus\", \"plasmid\", \"construct\"\n\nFeatures vs. coding sequences: a feature is a sequence in the DNA that codes\nfor a protein, including non-transcribed introns. A coding sequence (stored as\n`cdss`) includes **only** the sections of the feature that codes for a protein,\nminus introns and UTRs.\n\n@optional warnings contig_lengths contig_ids source_id taxonomy publications\n@optional ontology_events ontologies_present non_coding_features mrnas genome_type\n@optional genbank_handle_ref gff_handle_ref external_source_origination_date\n@optional release original_source_file_name notes quality_scores suspect assembly_ref\n@optional taxon_ref\n\n@metadata ws gc_content as GC content\n@metadata ws taxonomy as Taxonomy\n@metadata ws md5 as MD5\n@metadata ws dna_size as Size\n@metadata ws genetic_code as Genetic code\n@metadata ws domain as Domain\n@metadata ws source_id as Source ID\n@metadata ws source as Source\n@metadata ws scientific_name as Name\n@metadata ws genome_type as Type\n@metadata ws length(features) as Number of Protein Encoding Genes\n@metadata ws length(cdss) as Number of CDS\n@metadata ws assembly_ref as Assembly Object\n@metadata ws num_contigs as Number contigs\n@metadata ws length(warnings) as Number of Genome Level Warnings\n@metadata ws suspect as Suspect Genome",
+  "type" : "object",
+  "original-type" : "kidl-structure",
+  "properties" : {
+    "id" : {
+      "type" : "string",
+      "original-type" : "kidl-string",
+      "id-reference" : {
+        "attributes" : [ ],
+        "id-type" : "kb"
+      }
+    },
+    "scientific_name" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "domain" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "warnings" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "string",
+        "original-type" : "kidl-string"
+      }
+    },
+    "genome_tiers" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "string",
+        "original-type" : "kidl-string"
+      }
+    },
+    "feature_counts" : {
+      "type" : "object",
+      "original-type" : "kidl-mapping",
+      "additionalProperties" : {
+        "type" : "integer",
+        "original-type" : "kidl-int"
+      }
+    },
+    "genetic_code" : {
+      "type" : "integer",
+      "original-type" : "kidl-int"
+    },
+    "dna_size" : {
+      "type" : "integer",
+      "original-type" : "kidl-int"
+    },
+    "num_contigs" : {
+      "type" : "integer",
+      "original-type" : "kidl-int"
+    },
+    "molecule_type" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "contig_lengths" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "integer",
+        "original-type" : "kidl-int"
+      }
+    },
+    "contig_ids" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "string",
+        "original-type" : "kidl-string"
+      }
+    },
+    "source" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "source_id" : {
+      "type" : "string",
+      "original-type" : "kidl-string",
+      "id-reference" : {
+        "attributes" : [ ],
+        "id-type" : "external"
+      }
+    },
+    "md5" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "taxonomy" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "taxon_assignments" : {
+      "type" : "object",
+      "original-type" : "kidl-mapping",
+      "additionalProperties" : {
+        "type" : "string",
+        "original-type" : "kidl-string"
+      }
+    },
+    "gc_content" : {
+      "type" : "number",
+      "original-type" : "kidl-float"
+    },
+    "publications" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "array",
+        "original-type" : "kidl-tuple",
+        "maxItems" : 7,
+        "minItems" : 7,
+        "items" : [ {
+          "type" : "number",
+          "original-type" : "kidl-float"
+        }, {
+          "type" : "string",
+          "original-type" : "kidl-string"
+        }, {
+          "type" : "string",
+          "original-type" : "kidl-string"
+        }, {
+          "type" : "string",
+          "original-type" : "kidl-string"
+        }, {
+          "type" : "string",
+          "original-type" : "kidl-string"
+        }, {
+          "type" : "string",
+          "original-type" : "kidl-string"
+        }, {
+          "type" : "string",
+          "original-type" : "kidl-string"
+        } ]
+      }
+    },
+    "ontology_events" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "object",
+        "original-type" : "kidl-structure",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "ontology_ref" : {
+            "type" : "string",
+            "original-type" : "kidl-string",
+            "id-reference" : {
+              "attributes" : [ "KBaseOntology.OntologyDictionary" ],
+              "id-type" : "ws"
+            }
+          },
+          "method" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "method_version" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "timestamp" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "eco" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          }
+        },
+        "additionalProperties" : true,
+        "required" : [ "id", "method", "timestamp" ]
+      }
+    },
+    "ontologies_present" : {
+      "type" : "object",
+      "original-type" : "kidl-mapping",
+      "additionalProperties" : {
+        "type" : "object",
+        "original-type" : "kidl-mapping",
+        "additionalProperties" : {
+          "type" : "string",
+          "original-type" : "kidl-string"
+        }
+      }
+    },
+    "features" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "object",
+        "original-type" : "kidl-structure",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "original-type" : "kidl-string",
+            "id-reference" : {
+              "attributes" : [ ],
+              "id-type" : "external"
+            }
+          },
+          "location" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 4,
+              "minItems" : 4,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string",
+                "id-reference" : {
+                  "attributes" : [ ],
+                  "id-type" : "external"
+                }
+              }, {
+                "type" : "integer",
+                "original-type" : "kidl-int"
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              }, {
+                "type" : "integer",
+                "original-type" : "kidl-int"
+              } ]
+            }
+          },
+          "functions" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "functional_descriptions" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "ontology_terms" : {
+            "type" : "object",
+            "original-type" : "kidl-mapping",
+            "additionalProperties" : {
+              "type" : "object",
+              "original-type" : "kidl-mapping",
+              "additionalProperties" : {
+                "type" : "array",
+                "original-type" : "kidl-list",
+                "items" : {
+                  "type" : "integer",
+                  "original-type" : "kidl-int"
+                }
+              }
+            }
+          },
+          "note" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "md5" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "protein_translation" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "protein_translation_length" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          },
+          "cdss" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "mrnas" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "children" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "flags" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "warnings" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "inference_data" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "object",
+              "original-type" : "kidl-structure",
+              "properties" : {
+                "category" : {
+                  "type" : "string",
+                  "original-type" : "kidl-string"
+                },
+                "type" : {
+                  "type" : "string",
+                  "original-type" : "kidl-string"
+                },
+                "evidence" : {
+                  "type" : "string",
+                  "original-type" : "kidl-string"
+                }
+              },
+              "additionalProperties" : true,
+              "required" : [ "category", "type", "evidence" ]
+            }
+          },
+          "dna_sequence" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "dna_sequence_length" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          },
+          "aliases" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 2,
+              "minItems" : 2,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              } ]
+            }
+          },
+          "db_xrefs" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 2,
+              "minItems" : 2,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              } ]
+            }
+          }
+        },
+        "additionalProperties" : true,
+        "required" : [ "id", "location", "md5", "protein_translation_length", "cdss", "dna_sequence_length" ]
+      }
+    },
+    "non_coding_features" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "object",
+        "original-type" : "kidl-structure",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "original-type" : "kidl-string",
+            "id-reference" : {
+              "attributes" : [ ],
+              "id-type" : "external"
+            }
+          },
+          "location" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 4,
+              "minItems" : 4,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string",
+                "id-reference" : {
+                  "attributes" : [ ],
+                  "id-type" : "external"
+                }
+              }, {
+                "type" : "integer",
+                "original-type" : "kidl-int"
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              }, {
+                "type" : "integer",
+                "original-type" : "kidl-int"
+              } ]
+            }
+          },
+          "type" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "functions" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "functional_descriptions" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "ontology_terms" : {
+            "type" : "object",
+            "original-type" : "kidl-mapping",
+            "additionalProperties" : {
+              "type" : "object",
+              "original-type" : "kidl-mapping",
+              "additionalProperties" : {
+                "type" : "array",
+                "original-type" : "kidl-list",
+                "items" : {
+                  "type" : "integer",
+                  "original-type" : "kidl-int"
+                }
+              }
+            }
+          },
+          "note" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "md5" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "parent_gene" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "children" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "flags" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "warnings" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "inference_data" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "object",
+              "original-type" : "kidl-structure",
+              "properties" : {
+                "category" : {
+                  "type" : "string",
+                  "original-type" : "kidl-string"
+                },
+                "type" : {
+                  "type" : "string",
+                  "original-type" : "kidl-string"
+                },
+                "evidence" : {
+                  "type" : "string",
+                  "original-type" : "kidl-string"
+                }
+              },
+              "additionalProperties" : true,
+              "required" : [ "category", "type", "evidence" ]
+            }
+          },
+          "dna_sequence" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "dna_sequence_length" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          },
+          "aliases" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 2,
+              "minItems" : 2,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              } ]
+            }
+          },
+          "db_xrefs" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 2,
+              "minItems" : 2,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              } ]
+            }
+          }
+        },
+        "additionalProperties" : true,
+        "required" : [ "id", "location", "type", "md5", "dna_sequence_length" ]
+      }
+    },
+    "cdss" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "object",
+        "original-type" : "kidl-structure",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "original-type" : "kidl-string",
+            "id-reference" : {
+              "attributes" : [ ],
+              "id-type" : "external"
+            }
+          },
+          "location" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 4,
+              "minItems" : 4,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string",
+                "id-reference" : {
+                  "attributes" : [ ],
+                  "id-type" : "external"
+                }
+              }, {
+                "type" : "integer",
+                "original-type" : "kidl-int"
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              }, {
+                "type" : "integer",
+                "original-type" : "kidl-int"
+              } ]
+            }
+          },
+          "md5" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "protein_md5" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "parent_gene" : {
+            "type" : "string",
+            "original-type" : "kidl-string",
+            "id-reference" : {
+              "attributes" : [ ],
+              "id-type" : "external"
+            }
+          },
+          "parent_mrna" : {
+            "type" : "string",
+            "original-type" : "kidl-string",
+            "id-reference" : {
+              "attributes" : [ ],
+              "id-type" : "external"
+            }
+          },
+          "note" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "functions" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "functional_descriptions" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "ontology_terms" : {
+            "type" : "object",
+            "original-type" : "kidl-mapping",
+            "additionalProperties" : {
+              "type" : "object",
+              "original-type" : "kidl-mapping",
+              "additionalProperties" : {
+                "type" : "array",
+                "original-type" : "kidl-list",
+                "items" : {
+                  "type" : "integer",
+                  "original-type" : "kidl-int"
+                }
+              }
+            }
+          },
+          "flags" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "warnings" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "inference_data" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "object",
+              "original-type" : "kidl-structure",
+              "properties" : {
+                "category" : {
+                  "type" : "string",
+                  "original-type" : "kidl-string"
+                },
+                "type" : {
+                  "type" : "string",
+                  "original-type" : "kidl-string"
+                },
+                "evidence" : {
+                  "type" : "string",
+                  "original-type" : "kidl-string"
+                }
+              },
+              "additionalProperties" : true,
+              "required" : [ "category", "type", "evidence" ]
+            }
+          },
+          "protein_translation" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "protein_translation_length" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          },
+          "aliases" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 2,
+              "minItems" : 2,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              } ]
+            }
+          },
+          "db_xrefs" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 2,
+              "minItems" : 2,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              } ]
+            }
+          },
+          "dna_sequence" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "dna_sequence_length" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          }
+        },
+        "additionalProperties" : true,
+        "required" : [ "id", "location", "md5", "protein_md5", "protein_translation", "protein_translation_length", "dna_sequence_length" ]
+      }
+    },
+    "mrnas" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "object",
+        "original-type" : "kidl-structure",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "original-type" : "kidl-string",
+            "id-reference" : {
+              "attributes" : [ ],
+              "id-type" : "external"
+            }
+          },
+          "location" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 4,
+              "minItems" : 4,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string",
+                "id-reference" : {
+                  "attributes" : [ ],
+                  "id-type" : "external"
+                }
+              }, {
+                "type" : "integer",
+                "original-type" : "kidl-int"
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              }, {
+                "type" : "integer",
+                "original-type" : "kidl-int"
+              } ]
+            }
+          },
+          "md5" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "parent_gene" : {
+            "type" : "string",
+            "original-type" : "kidl-string",
+            "id-reference" : {
+              "attributes" : [ ],
+              "id-type" : "external"
+            }
+          },
+          "cds" : {
+            "type" : "string",
+            "original-type" : "kidl-string",
+            "id-reference" : {
+              "attributes" : [ ],
+              "id-type" : "external"
+            }
+          },
+          "dna_sequence" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "dna_sequence_length" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          },
+          "note" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "functions" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "functional_descriptions" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "ontology_terms" : {
+            "type" : "object",
+            "original-type" : "kidl-mapping",
+            "additionalProperties" : {
+              "type" : "object",
+              "original-type" : "kidl-mapping",
+              "additionalProperties" : {
+                "type" : "array",
+                "original-type" : "kidl-list",
+                "items" : {
+                  "type" : "integer",
+                  "original-type" : "kidl-int"
+                }
+              }
+            }
+          },
+          "flags" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "warnings" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "string",
+              "original-type" : "kidl-string"
+            }
+          },
+          "inference_data" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "object",
+              "original-type" : "kidl-structure",
+              "properties" : {
+                "category" : {
+                  "type" : "string",
+                  "original-type" : "kidl-string"
+                },
+                "type" : {
+                  "type" : "string",
+                  "original-type" : "kidl-string"
+                },
+                "evidence" : {
+                  "type" : "string",
+                  "original-type" : "kidl-string"
+                }
+              },
+              "additionalProperties" : true,
+              "required" : [ "category", "type", "evidence" ]
+            }
+          },
+          "aliases" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 2,
+              "minItems" : 2,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              } ]
+            }
+          },
+          "db_xrefs" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 2,
+              "minItems" : 2,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              } ]
+            }
+          }
+        },
+        "additionalProperties" : true,
+        "required" : [ "id", "location", "md5", "dna_sequence_length" ]
+      }
+    },
+    "assembly_ref" : {
+      "type" : "string",
+      "original-type" : "kidl-string",
+      "id-reference" : {
+        "attributes" : [ "KBaseGenomeAnnotations.Assembly" ],
+        "id-type" : "ws"
+      }
+    },
+    "taxon_ref" : {
+      "type" : "string",
+      "original-type" : "kidl-string",
+      "id-reference" : {
+        "attributes" : [ "KBaseGenomeAnnotations.Taxon" ],
+        "id-type" : "ws"
+      }
+    },
+    "genbank_handle_ref" : {
+      "type" : "string",
+      "original-type" : "kidl-string",
+      "id-reference" : {
+        "attributes" : [ ],
+        "id-type" : "handle"
+      }
+    },
+    "gff_handle_ref" : {
+      "type" : "string",
+      "original-type" : "kidl-string",
+      "id-reference" : {
+        "attributes" : [ ],
+        "id-type" : "handle"
+      }
+    },
+    "external_source_origination_date" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "release" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "original_source_file_name" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "notes" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "quality_scores" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "object",
+        "original-type" : "kidl-structure",
+        "properties" : {
+          "method" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "method_report_ref" : {
+            "type" : "string",
+            "original-type" : "kidl-string",
+            "id-reference" : {
+              "attributes" : [ "KBaseReport.Report" ],
+              "id-type" : "ws"
+            }
+          },
+          "method_version" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "score" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "score_interpretation" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "timestamp" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          }
+        },
+        "additionalProperties" : true,
+        "required" : [ "method", "score", "score_interpretation", "timestamp" ]
+      }
+    },
+    "suspect" : {
+      "type" : "integer",
+      "original-type" : "kidl-int"
+    },
+    "genome_type" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    }
+  },
+  "additionalProperties" : true,
+  "required" : [ "id", "scientific_name", "domain", "genome_tiers", "feature_counts", "genetic_code", "dna_size", "num_contigs", "molecule_type", "source", "md5", "taxon_assignments", "gc_content", "features", "cdss" ],
+  "metadata-ws" : {
+    "Assembly Object" : "assembly_ref",
+    "Domain" : "domain",
+    "GC content" : "gc_content",
+    "Genetic code" : "genetic_code",
+    "MD5" : "md5",
+    "Name" : "scientific_name",
+    "Number contigs" : "num_contigs",
+    "Number of CDS" : "length(cdss)",
+    "Number of Genome Level Warnings" : "length(warnings)",
+    "Number of Protein Encoding Genes" : "length(features)",
+    "Size" : "dna_size",
+    "Source" : "source",
+    "Source ID" : "source_id",
+    "Suspect Genome" : "suspect",
+    "Taxonomy" : "taxonomy",
+    "Type" : "genome_type"
+  }
+}
+{
+  "id" : "GenomeComparison",
+  "description" : "GenomeComparisonData object: this object holds information about a multigenome comparison.\n\n@optional protcomp_ref pangenome_ref\n@metadata ws core_functions as Core functions\n@metadata ws core_families as Core families\n@metadata ws name as Name\n@metadata ws length(genomes) as Number genomes",
+  "type" : "object",
+  "original-type" : "kidl-structure",
+  "properties" : {
+    "id" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "name" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "core_functions" : {
+      "type" : "integer",
+      "original-type" : "kidl-int"
+    },
+    "core_families" : {
+      "type" : "integer",
+      "original-type" : "kidl-int"
+    },
+    "protcomp_ref" : {
+      "type" : "string",
+      "original-type" : "kidl-string",
+      "id-reference" : {
+        "attributes" : [ "GenomeComparison.ProteomeComparison" ],
+        "id-type" : "ws"
+      }
+    },
+    "pangenome_ref" : {
+      "type" : "string",
+      "original-type" : "kidl-string",
+      "id-reference" : {
+        "attributes" : [ "KBaseGenomes.Pangenome" ],
+        "id-type" : "ws"
+      }
+    },
+    "genomes" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "object",
+        "original-type" : "kidl-structure",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "genome_ref" : {
+            "type" : "string",
+            "original-type" : "kidl-string",
+            "id-reference" : {
+              "attributes" : [ "KBaseGenomes.Genome", "KBaseGenomeAnnotations.GenomeAnnotation" ],
+              "id-type" : "ws"
+            }
+          },
+          "genome_similarity" : {
+            "type" : "object",
+            "original-type" : "kidl-mapping",
+            "additionalProperties" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 2,
+              "minItems" : 2,
+              "items" : [ {
+                "type" : "integer",
+                "original-type" : "kidl-int"
+              }, {
+                "type" : "integer",
+                "original-type" : "kidl-int"
+              } ]
+            }
+          },
+          "name" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "taxonomy" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "features" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          },
+          "families" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          },
+          "functions" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          }
+        },
+        "additionalProperties" : true,
+        "required" : [ "id", "genome_ref", "genome_similarity", "name", "taxonomy", "features", "families", "functions" ]
+      }
+    },
+    "families" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "object",
+        "original-type" : "kidl-structure",
+        "properties" : {
+          "core" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          },
+          "genome_features" : {
+            "type" : "object",
+            "original-type" : "kidl-mapping",
+            "additionalProperties" : {
+              "type" : "array",
+              "original-type" : "kidl-list",
+              "items" : {
+                "type" : "array",
+                "original-type" : "kidl-tuple",
+                "maxItems" : 3,
+                "minItems" : 3,
+                "items" : [ {
+                  "type" : "string",
+                  "original-type" : "kidl-string",
+                  "id-reference" : {
+                    "attributes" : [ ],
+                    "id-type" : "external"
+                  }
+                }, {
+                  "type" : "array",
+                  "original-type" : "kidl-list",
+                  "items" : {
+                    "type" : "integer",
+                    "original-type" : "kidl-int"
+                  }
+                }, {
+                  "type" : "number",
+                  "original-type" : "kidl-float"
+                } ]
+              }
+            }
+          },
+          "id" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "type" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "protein_translation" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "number_genomes" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          },
+          "fraction_genomes" : {
+            "type" : "number",
+            "original-type" : "kidl-float"
+          },
+          "fraction_consistent_annotations" : {
+            "type" : "number",
+            "original-type" : "kidl-float"
+          },
+          "most_consistent_role" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          }
+        },
+        "additionalProperties" : true,
+        "required" : [ "core", "genome_features", "id", "type", "protein_translation", "number_genomes", "fraction_genomes", "fraction_consistent_annotations", "most_consistent_role" ]
+      }
+    },
+    "functions" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "object",
+        "original-type" : "kidl-structure",
+        "properties" : {
+          "core" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          },
+          "genome_features" : {
+            "type" : "object",
+            "original-type" : "kidl-mapping",
+            "additionalProperties" : {
+              "type" : "array",
+              "original-type" : "kidl-list",
+              "items" : {
+                "type" : "array",
+                "original-type" : "kidl-tuple",
+                "maxItems" : 3,
+                "minItems" : 3,
+                "items" : [ {
+                  "type" : "string",
+                  "original-type" : "kidl-string",
+                  "id-reference" : {
+                    "attributes" : [ ],
+                    "id-type" : "external"
+                  }
+                }, {
+                  "type" : "integer",
+                  "original-type" : "kidl-int"
+                }, {
+                  "type" : "number",
+                  "original-type" : "kidl-float"
+                } ]
+              }
+            }
+          },
+          "id" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "reactions" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 2,
+              "minItems" : 2,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string",
+                "id-reference" : {
+                  "attributes" : [ ],
+                  "id-type" : "external"
+                }
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              } ]
+            }
+          },
+          "subsystem" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "primclass" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "subclass" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "number_genomes" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          },
+          "fraction_genomes" : {
+            "type" : "number",
+            "original-type" : "kidl-float"
+          },
+          "fraction_consistent_families" : {
+            "type" : "number",
+            "original-type" : "kidl-float"
+          },
+          "most_consistent_family" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          }
+        },
+        "additionalProperties" : true,
+        "required" : [ "core", "genome_features", "id", "reactions", "subsystem", "primclass", "subclass", "number_genomes", "fraction_genomes", "fraction_consistent_families", "most_consistent_family" ]
+      }
+    }
+  },
+  "additionalProperties" : true,
+  "required" : [ "id", "name", "core_functions", "core_families", "genomes", "families", "functions" ],
+  "metadata-ws" : {
+    "Core families" : "core_families",
+    "Core functions" : "core_functions",
+    "Name" : "name",
+    "Number genomes" : "length(genomes)"
+  }
+}
+{
+  "id" : "Pangenome",
+  "description" : "Pangenome object: this object holds all data regarding a pangenome\n\n@searchable ws_subset id name\n@metadata ws type as Type\n@metadata ws name as Name\n@metadata ws length(orthologs) as Number orthologs\n@metadata ws length(genome_refs) as Number genomes",
+  "type" : "object",
+  "original-type" : "kidl-structure",
+  "properties" : {
+    "id" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "name" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "type" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "genome_refs" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "string",
+        "original-type" : "kidl-string",
+        "id-reference" : {
+          "attributes" : [ "KBaseGenomes.Genome", "KBaseGenomeAnnotations.GenomeAnnotation" ],
+          "id-type" : "ws"
+        }
+      }
+    },
+    "orthologs" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "object",
+        "original-type" : "kidl-structure",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "type" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "function" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "md5" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "protein_translation" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "orthologs" : {
+            "type" : "array",
+            "original-type" : "kidl-list",
+            "items" : {
+              "type" : "array",
+              "original-type" : "kidl-tuple",
+              "maxItems" : 3,
+              "minItems" : 3,
+              "items" : [ {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              }, {
+                "type" : "number",
+                "original-type" : "kidl-float"
+              }, {
+                "type" : "string",
+                "original-type" : "kidl-string"
+              } ]
+            }
+          }
+        },
+        "additionalProperties" : true,
+        "required" : [ "id", "orthologs" ]
+      }
+    }
+  },
+  "additionalProperties" : true,
+  "required" : [ "id", "name", "type", "genome_refs", "orthologs" ],
+  "searchable-ws-subset" : {
+    "fields" : {
+      "id" : { },
+      "name" : { }
+    },
+    "keys" : { }
+  },
+  "metadata-ws" : {
+    "Name" : "name",
+    "Number genomes" : "length(genome_refs)",
+    "Number orthologs" : "length(orthologs)",
+    "Type" : "type"
+  }
+}
+{
+  "id" : "ContigSet",
+  "description" : "Type spec for the \"ContigSet\" object\n\nFields:\n    id - string - unique kbase ID of the contig set\n    name - string - name of the contig set\n    type - string - type of the contig set (values are: Genome,Transcripts,Environment,Collection)\n    source_id - string - source ID of the contig set\n    source - string - source of the contig set\n    contigs - list<Contig> - list of contigs in the contig set\n    reads_ref - string - reference to the shocknode with the raw reads from which contigs\n        were assembled\n    fasta_ref - string - reference to fasta file from which contig set were read\n\n@optional name type reads_ref fasta_ref\n@metadata ws type as Type\n@metadata ws source_id as Source ID\n@metadata ws source as Source\n@metadata ws name as Name\n@metadata ws length(contigs) as Number contigs",
+  "type" : "object",
+  "original-type" : "kidl-structure",
+  "properties" : {
+    "id" : {
+      "type" : "string",
+      "original-type" : "kidl-string",
+      "id-reference" : {
+        "attributes" : [ ],
+        "id-type" : "kb"
+      }
+    },
+    "name" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "md5" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "source_id" : {
+      "type" : "string",
+      "original-type" : "kidl-string",
+      "id-reference" : {
+        "attributes" : [ ],
+        "id-type" : "external"
+      }
+    },
+    "source" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "type" : {
+      "type" : "string",
+      "original-type" : "kidl-string"
+    },
+    "reads_ref" : {
+      "type" : "string",
+      "original-type" : "kidl-string",
+      "id-reference" : {
+        "attributes" : [ ],
+        "id-type" : "shock"
+      }
+    },
+    "fasta_ref" : {
+      "type" : "string",
+      "original-type" : "kidl-string",
+      "id-reference" : {
+        "attributes" : [ ],
+        "id-type" : "shock"
+      }
+    },
+    "contigs" : {
+      "type" : "array",
+      "original-type" : "kidl-list",
+      "items" : {
+        "type" : "object",
+        "original-type" : "kidl-structure",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "original-type" : "kidl-string",
+            "id-reference" : {
+              "attributes" : [ ],
+              "id-type" : "external"
+            }
+          },
+          "length" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          },
+          "md5" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "sequence" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "genetic_code" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          },
+          "cell_compartment" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "replicon_type" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "replicon_geometry" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "name" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "description" : {
+            "type" : "string",
+            "original-type" : "kidl-string"
+          },
+          "complete" : {
+            "type" : "integer",
+            "original-type" : "kidl-int"
+          }
+        },
+        "additionalProperties" : true,
+        "required" : [ "id", "sequence" ]
+      }
+    }
+  },
+  "additionalProperties" : true,
+  "required" : [ "id", "md5", "source_id", "source", "contigs" ],
+  "metadata-ws" : {
+    "Name" : "name",
+    "Number contigs" : "length(contigs)",
+    "Source" : "source",
+    "Source ID" : "source_id",
+    "Type" : "type"
+  }
+}
