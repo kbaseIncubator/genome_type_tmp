@@ -894,7 +894,6 @@ module KBaseGenomes {
         Genome_ref genome_ref;
         int num_domains;
         int num_features;
-
         list<Domain> domains;
         list<FeatureDomainData> featuredomains;
     } GenomeDomainData;
