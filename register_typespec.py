@@ -9,7 +9,7 @@ import requests
 
 _WS_URL = "https://ci.kbase.us/services/ws"
 _TOK = os.environ['WS_TOK']
-_SPEC_PATH = "./kbase_genomes_module.spec"
+_SPEC_PATH = "./kbase_genomes_module_updated.spec"
 
 
 def get_spec():
@@ -27,7 +27,7 @@ def get_spec():
     if resp_json.get('error'):
         sys.stderr.write(resp_json['error']['error'] + "\n")
     else:
-        return resp_json['result'][0]['spec']
+        print(resp_json['result'][0]['spec'])
 
 
 def main():
@@ -39,13 +39,11 @@ def main():
         headers={"Authorization": _TOK},
         data=json.dumps({
             "method": "register_typespec",
-            "params": [{
-                "spec": spec,
-                "dryrun": 1,
-            }],
+            "params": [{"spec": spec}],
         })
     )
     resp_json = resp.json()
+    print('calling', resp_json)
     if resp_json.get('error'):
         sys.stderr.write(resp_json['error']['error'] + "\n")
     else:
