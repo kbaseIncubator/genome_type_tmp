@@ -21,15 +21,14 @@ def main():
         headers={"Authorization": _TOK},
         data=json.dumps({
             "method": "register_typespec",
-            "params": [{"spec": spec}],
+            "params": [{"spec": spec, "dryrun": 0}],
         })
     )
     resp_json = resp.json()
     if resp_json.get("error"):
         sys.stderr.write(resp_json["error"]["error"] + "\n")
     else:
-        for (key, val) in resp_json["result"][0].items():
-            print(val)
+        print(json.dumps(resp_json, indent=2))
 
 
 if __name__ == '__main__':
