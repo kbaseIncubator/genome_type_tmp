@@ -388,8 +388,8 @@ module KBaseGenomes {
         list<InferenceInfo> inference_data;
         string protein_translation;
         int protein_translation_length;
-        list<tuple<string, string>> aliases;
-        list<tuple<string, string>> db_xrefs;
+        list<tuple<string fieldname, string alias>> aliases;
+        list<tuple<string db_source, string db_identifier>> db_xrefs;
         string dna_sequence;
         int dna_sequence_length;
     } CDS;
@@ -467,8 +467,8 @@ module KBaseGenomes {
         list<string> flags;
         list<string> warnings;
         list<InferenceInfo> inference_data;
-        list<tuple<string, string>> aliases;
-        list<tuple<string, string>> db_xrefs;
+        list<tuple<string fieldname, string alias>> aliases;
+        list<tuple<string db_source, string db_identifier>> db_xrefs;
     } mRNA;
 
     /*
