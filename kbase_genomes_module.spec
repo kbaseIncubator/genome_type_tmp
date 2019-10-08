@@ -1,5 +1,5 @@
 /*
-@author chenry jayrbolton
+@author chenry, jayrbolton
 */
 module KBaseGenomes {
     /*
@@ -162,9 +162,9 @@ module KBaseGenomes {
         source_id - string - source ID of the contig set
         source - string - source of the contig set
         contigs - list<Contig> - list of contigs in the contig set
-        reads_ref - reads_ref - reference to the shocknode with the raw reads from which contigs
+        reads_ref - string - reference to the shocknode with the raw reads from which contigs
             were assembled
-        fasta_ref - fasta_ref - reference to fasta file from which contig set were read
+        fasta_ref - string - reference to fasta file from which contig set were read
 
     @optional name type reads_ref fasta_ref
     @metadata ws type as Type
@@ -189,13 +189,13 @@ module KBaseGenomes {
     Structure for a publication
 
     Elements:
-        (0) float pubmedid
-        (1) string source (ex. Pubmed)
-        (2) string title
-        (3) string web address
-        (4) string  publication year
-        (5) string authors
-        (6) string journal
+        (0) pubmedid - float
+        (1) source - string - (ex. Pubmed)
+        (2) title - string
+        (3) string web address - string
+        (4) publication year - string
+        (5) authors - string
+        (6) journal - string
     */
     typedef tuple<float pubmedid,string source,string title, string url,string year,string authors, string journal> publication;
 
@@ -315,7 +315,7 @@ module KBaseGenomes {
 
     Fields:
         id - string - identifier of the coding sequence, such as "b0001_CDS_1"
-        location - list<tuple<string, int, string, int>> location - list of
+        location - list<tuple<string, int, string, int>> - list of
             locations from where this sequence originates in the original assembly.
             Each sub-sequence in the list constitutes a section of the resulting
             CDS. The first element in the tuple corresponds to the "contig_id",
@@ -382,7 +382,7 @@ module KBaseGenomes {
         string note;
         list<string> functions;
         list<string> functional_descriptions;
-        mapping<string, mapping<string, list<int>>> ontology_terms;
+        mapping<string ontology_namespace, mapping<string ontology_id, list<int> evidence_events>> ontology_terms;
         list<string> flags;
         list<string> warnings;
         list<InferenceInfo> inference_data;
@@ -400,7 +400,7 @@ module KBaseGenomes {
 
     Fields:
         id - string - identifying string for the mRNA
-        location - list<tuple<string, int, string, int>> location - list of
+        location - list<tuple<string, int, string, int>> - list of
             locations from where this sequence originates in the original assembly.
             Each sub-sequence in the list constitutes a section of the resulting
             CDS. The first element in the tuple corresponds to the "contig_id",
@@ -463,7 +463,7 @@ module KBaseGenomes {
         string note;
         list<string> functions;
         list<string> functional_descriptions;
-        mapping<string, mapping<string, list<int>>> ontology_terms;
+        mapping<string ontology_namespace, mapping<string ontology_id, list<int> evidence_events>> ontology_terms;
         list<string> flags;
         list<string> warnings;
         list<InferenceInfo> inference_data;
@@ -577,7 +577,7 @@ module KBaseGenomes {
         md5 - string - checksum of the underlying assembly sequence
         taxonomy - string - semicolon-delimited taxonomy lineage, in order of parent to child
         taxon_assignments - mapping of taxonomy namespace to taxon ID.
-            example - {"ncbi" - "286", "gtdb" - "s__staphylococcus_devriesei"}
+            example - {"ncbi": "286", "gtdb": "s__staphylococcus_devriesei"}
         gc_content - float - ratio of GC count to AT in the genome
         publications - tuple of (pubmedid, source, title, web_addr, year, authors, journal). See typedef above.
         ontology_events - A record of the service and method used for a set of
@@ -636,7 +636,7 @@ module KBaseGenomes {
         string domain;
         list<string> warnings;
         list<string> genome_tiers;
-        mapping<string, int> feature_counts;
+        mapping<string type, int count> feature_counts;
         int genetic_code;
         int dna_size;
         int num_contigs;
@@ -651,7 +651,7 @@ module KBaseGenomes {
         float gc_content;
         list<publication> publications;
         list<Ontology_event> ontology_events;
-        mapping<string, mapping<string, string>> ontologies_present;
+        mapping<string ontology_namespace, mapping<string ontology_id, string termname>> ontologies_present;
         list<Feature> features;
         list<NonCodingFeature> non_coding_features;
         list<CDS> cdss;
