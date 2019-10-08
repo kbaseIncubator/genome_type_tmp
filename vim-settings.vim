@@ -1,4 +1,4 @@
-" Use the following vim settings when working on `kbase_genomes_module.spec`
+" Use the following vim settings when working on `kbase_genomes_module_updated.spec`
 
 " Syntax highlighting for c++
 set syntax=cpp
