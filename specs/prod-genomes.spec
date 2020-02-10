@@ -623,7 +623,7 @@ module KBaseGenomes {
     @metadata ws source_id as Source ID
     @metadata ws source as Source
     @metadata ws scientific_name as Name
-    @metadata ws genome_type as Type
+    @metadata ws genome_type as Genome Type
     @metadata ws length(features) as Number of Protein Encoding Genes
     @metadata ws length(cdss) as Number of CDS
     @metadata ws assembly_ref as Assembly Object
