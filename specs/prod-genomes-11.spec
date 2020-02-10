@@ -1,5 +1,5 @@
 /*
-@author chenry, jayrbolton
+@author chenry, jayrbolton, slebras, psdehal, scanon, jkbaumohl, seanjungbluth
 */
 module KBaseGenomes {
     /*
@@ -502,7 +502,7 @@ module KBaseGenomes {
     typedef string Method_report_ref;
 
     /*
-    @optional ontology_ref method_version eco
+    @optional ontology_ref method_version eco description
     */
     typedef structure {
         string id;
@@ -511,6 +511,7 @@ module KBaseGenomes {
         string method_version;
         string timestamp;
         string eco;
+        string description;
     } Ontology_event;
 
     /*

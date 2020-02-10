@@ -8,10 +8,9 @@ import os
 import sys
 import requests
 
-_WS_URL = "https://ci.kbase.us/services/ws"
+_WS_URL = os.environ.get("WS_URL", "https://kbase.us/services/ws")
 _TOK = os.environ["WS_TOK"]
-_SPEC_PATH = "./kbase_genomes_module_updated.spec"
-_MOD_NAME = "KBaseGenomes"
+_MOD_NAME = os.environ.get("MOD_NAME", "KBaseGenomes")
 
 
 def main():
@@ -21,10 +20,15 @@ def main():
         headers={"Authorization": _TOK},
         data=json.dumps({
             "method": "get_module_info",
-            "params": [{"mod": "KBaseGenomes"}]
+            "params": [{"mod": _MOD_NAME}]
         })
     )
-    resp_json = resp.json()
+    try:
+        resp_json = resp.json()
+    except Exception as err:
+        print(err)
+        print(resp.text)
+        raise err
     if resp_json.get("error"):
         sys.stderr.write(resp_json["error"]["error"] + "\n")
     else:
