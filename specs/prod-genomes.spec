@@ -357,7 +357,8 @@ module KBaseGenomes {
             common example is "pseudo" for pseudo-genes that do not encode proteins,
             which shows up as "/pseudo" in the genbank.
             Values can be: "pseudo", "ribosomal_slippage", "trans_splicing"
-        warnings - list<string> - TODO
+        warnings - list<string> - list of plain text warnings related to importing or constructing
+            each feature
         inference_data - list<InferenceInfo> - TODO
         protein_translation - string - amino acid sequence that this CDS gets translated into.
         protein_translation_length - int - length of the above
@@ -422,7 +423,7 @@ module KBaseGenomes {
             sequence extends from 100 down to 51, which has a length of 50
             bases. It does not go from index 100 to 50, as that would have a
             length of 51.
-        md5 - string - md5 of the dna sequence - TODO clarification
+        md5 - string - md5 of the dna sequence used to check equality of genomes
         parent_gene - Feature_id - corresponding feature for this sequence, including introns and UTRs
         cds - string - corresponding coding sequence for this mRNA (the sequence minus UTRs)
         dna_sequence - string - sequence of UTRs and exons from the genome that constitute this mRNA
